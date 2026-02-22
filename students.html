@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stored Students - Bhadrak Autonomous College</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav>
+      <div class="logo">Bhadrak Autonomous College</div>
+      <ul>
+        <li><a href="index.html">Back to Home</a></li>
+      </ul>
+    </nav>
+
+    <section id="stored-students">
+      <h2>All Stored Students</h2>
+      <table class="student-table">
+        <thead>
+          <tr>
+            <th>Serial No.</th>
+            <th>Name</th>
+            <th>Roll No.</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="stored-student-data">
+          <!-- Rows will be auto-filled by JS -->
+        </tbody>
+      </table>
+    </section>
+
+    <script>
+  let storedStudents = JSON.parse(localStorage.getItem('students')) || [];
+  const tbody = document.getElementById('stored-student-data');
+
+  const saveStudents = () => {
+    localStorage.setItem('students', JSON.stringify(storedStudents));
+  };
+
+  const renderTable = () => {
+    tbody.innerHTML = '';
+
+    storedStudents.forEach((student, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td><span class="editable" data-field="name">${student.name}</span></td>
+        <td><span class="editable" data-field="roll">${student.roll}</span></td>
+        <td><span class="editable" data-field="email">${student.email}</span></td>
+        <td><span class="editable" data-field="dept">${student.dept}</span></td>
+        <td>
+          <button class="edit-btn">Edit</button>
+          <button class="save-btn" style="display:none;">Save</button>
+          <button class="cancel-btn" style="display:none;">Cancel</button>
+          <button class="delete-btn">Delete</button>
+        </td>
+      `;
+
+      const editBtn = row.querySelector('.edit-btn');
+      const saveBtn = row.querySelector('.save-btn');
+      const cancelBtn = row.querySelector('.cancel-btn');
+      const deleteBtn = row.querySelector('.delete-btn');
+
+      // ✏️ EDIT
+      editBtn.addEventListener('click', () => {
+        row.querySelectorAll('.editable').forEach(span => {
+          const input = document.createElement('input');
+          input.type = span.dataset.field === 'email' ? 'email' : 'text';
+          input.value = span.textContent;
+          input.dataset.field = span.dataset.field;
+          input.className = 'edit-input';
+          span.replaceWith(input);
+        });
+
+        editBtn.style.display = 'none';
+        deleteBtn.style.display = 'none';
+        saveBtn.style.display = 'inline';
+        cancelBtn.style.display = 'inline';
+      });
+
+      // 💾 SAVE
+      saveBtn.addEventListener('click', () => {
+        row.querySelectorAll('.edit-input').forEach(input => {
+          const field = input.dataset.field;
+          storedStudents[index][field] = input.value.trim();
+        });
+
+        saveStudents();
+        renderTable();
+      });
+
+      // ❌ CANCEL
+      cancelBtn.addEventListener('click', () => {
+        renderTable();
+      });
+
+      // 🗑️ DELETE
+      deleteBtn.addEventListener('click', () => {
+        const confirmDelete = confirm(
+          `Delete student: ${student.name}?`
+        );
+        if (confirmDelete) {
+          storedStudents.splice(index, 1);
+          saveStudents();
+          renderTable();
+        }
+      });
+
+      tbody.appendChild(row);
+    });
+  };
+
+  renderTable();
+  
+  
+  /* 🔐 PAGE PASSWORD PROTECTION */
+  const PAGE_PASSWORD = "subham@dev"; // change password here
+
+  const enteredPassword = prompt("Enter password to view student details:");
+
+  if (enteredPassword !== PAGE_PASSWORD) {
+    alert("Wrong password ❌ Access denied");
+    document.body.innerHTML = "<h2 style='text-align:center;margin-top:50px;'>Access Denied</h2>";
+    throw new Error("Unauthorized access");
+  }
+
+  /* ===== YOUR EXISTING CODE BELOW (UNCHANGED) ===== */
+
+</script>
+
+
+  </body>
+</html>

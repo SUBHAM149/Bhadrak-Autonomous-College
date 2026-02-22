@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>College Application Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      background: #fff;
+      margin: 40px auto;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #0d6efd;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px;
+      background: #0d6efd;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #084298;
+    }
+    .admin-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #6c757d; /* grey-blue */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.admin-btn:hover {
+  background-color: #5a6268;
+}
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>College Admission Form</h2>
+
+  <form onsubmit="submitForm(event)">
+
+  <label>Full Name</label>
+  <input type="text" id="name" required>
+
+  <label>Email</label>
+  <input type="email" id="email" required>
+
+  <label>Mobile Number</label>
+  <input type="tel" id="phone" required>
+
+  <label>Select Course</label>
+  <select id="course" required>
+    <option value="">-- Select Course --</option>
+    <option>BSc</option>
+    <option>BCA</option>
+    <option>BCom</option>
+    <option>BA</option>
+  </select>
+  <label>Add Adress</label>
+  <textarea id="address" rows="3"></textarea>
+  <button type="submit">Submit Application</button>
+</form>
+<footer style="margin-top:30px; text-align:center;">
+  <button class="admin-btn" onclick="goToAdmin()">
+    View Submitted Data (Admin)
+  </button>
+</footer>
+
+</div>
+
+
+
+<script>
+  function submitForm(e) {
+    e.preventDefault();
+    alert("Application Submitted Successfully!");
+    window.location.href = "index.html"; // back to home
+  }
+  function submitForm(e) {
+    e.preventDefault();
+
+    const application = {
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      phone: document.getElementById("phone").value,
+      course: document.getElementById("course").value,
+      address: document.getElementById("address").value,
+      date: new Date().toLocaleString()
+    };
+
+    let data = JSON.parse(localStorage.getItem("applications")) || [];
+    data.push(application);
+    localStorage.setItem("applications", JSON.stringify(data));
+
+    alert("Application submitted successfully!");
+    e.target.reset();
+  }
+  
+  function goToAdmin() {
+    const password = prompt("Enter Admin Password:");
+
+    if (password === "subham@dev") {
+      window.location.href = "admin.html";
+    } else {
+      alert("Access Denied! Admin only.");
+    }
+  }
+</script>
+
+
+
+</body>
+</html>
